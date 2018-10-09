@@ -17,8 +17,8 @@ public class OS{
     public static ArrayList<PCB> Wait_Queue = new ArrayList<PCB>();
     public static ArrayList<PCB> Terminated_Queue = new ArrayList<PCB>();
     public static ArrayList<PCB> Currently_Running = new ArrayList<PCB>();//beto's code, remind him :)
-    public static CPU cpu = new CPU();
-    public IODevice io = new IODevice(Wait_Queue);
+    //public static CPU cpu = new CPU();
+    //public IODevice io = new IODevice(Wait_Queue);
     public boolean isCPUAvailable;
     // need to make processTable
 
