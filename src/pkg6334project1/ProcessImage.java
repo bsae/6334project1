@@ -10,13 +10,13 @@ package pkg6334project1;
  * @author Humberto Saenz
  */
 public class ProcessImage {
-{
-public PCB Pcb_data;
-public string code= CPU-I/O burst Sequence;
+
+    public PCB Pcb_data;
+    public String code;
 //to do: other variables help you computing the latency, response
-}
-public Process(String process) {
- //set PCB data, code and others
-//set state as "NEW";
-}
+
+    public void Process(String process) {
+     //set PCB data, code and others
+    //set state as "NEW";
+    }
 }
