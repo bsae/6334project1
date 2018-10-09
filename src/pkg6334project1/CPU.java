@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package pkg6334project1;
+import java.util.*;
 import javafx.util.Pair;
 /**
  *
@@ -11,16 +12,16 @@ import javafx.util.Pair;
  */
 
 public class CPU{
-    public boolean BusyOrNot;
+    public boolean cpuIsBusy;
     public int PC; //Your CPU only has one register PC
     public int timeslice;
     public CPU(int settimeslice)
     {
         timeslice= settimeslice;
-        BusyOrNot=false;
+        cpuIsBusy=false;
     }
     public Pair<Integer, String> execute(Process P){
-        BusyOrNot=true;
+        cpuIsBusy=true;
         /* read the CPU burst number, say #, from the position
        PositionOfNextInstructionToExecute of P.
         Repeat calling Bubble Sort() for # times and then continue.
@@ -37,11 +38,40 @@ public class CPU{
        Pair<Integer, String> output = new Pair<Integer, String>(1, "test");
        return output;
     }
-    public void BubbleSort()
+    public void BubbleSort(){
+    	List<Integer> listToSort = rng(100000);
+    	
+    	for (int i = 0; i < listToSort.size()-1; ++i)
+    	{
+    		for (int j = 0; j < listToSort.size()-1; ++j)
+    		{
+    			if (listToSort.indexOf(j) > listToSort.indexOf(j+1))
+    			{
+    				Collections.swap(listToSort, j, j+1);
+    			}
+    		}
+    	}
+
+    }
+    
+    public List<Integer> rng(int n)
     {
-    }
-    public Boolean CPUisBusy()
+        List<Integer> result = new ArrayList<>();
+        double rand = 0;
+        for (int i : result)
+        {
+            rand = (Math.random() * 100000)+1;
+            result.add((int) rand);
+
+        }//looping until n-many random ints btw 1-100k into list
+
+        return result;
+    }    
+    
+    
+    public boolean cpuBusyBoolean()
     { 
-        return BusyOrNot;
+        return false;
     }
+    
 }
