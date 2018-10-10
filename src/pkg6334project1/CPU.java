@@ -48,7 +48,7 @@ public class CPU{
        //maybe break out if timeSliceRemaining = 0
         for(int i = 0; i < P.burstSeq.get(programCounter); ++i)
         {
-            BubbleSort();
+            P.BubbleSort();
             
             //since Integer obj are immutable, copy value of whats at index
             //decrement, reset at index
@@ -71,37 +71,7 @@ public class CPU{
     output = new Pair(programCounter+1, "wait");
     cpuIsBusy = false;
     return output;
-    }
-    public void BubbleSort(){
-    	List<Integer> listToSort = rng(100000);
-    	
-    	for (int i = 0; i < listToSort.size()-1; ++i)
-    	{
-    		for (int j = 0; j < listToSort.size()-1; ++j)
-    		{
-    			if (listToSort.indexOf(j) > listToSort.indexOf(j+1))
-    			{
-    				Collections.swap(listToSort, j, j+1);
-    			}
-    		}
-    	}
-
-    }
-    
-    public List<Integer> rng(int n)
-    {
-        List<Integer> result = new ArrayList<>();
-        double rand = 0;
-        for (int i : result)
-        {
-            rand = (Math.random() * 100000)+1;
-            result.add((int) rand);
-
-        }//looping until n-many random ints btw 1-100k into list
-
-        return result;
-    }    
-    
+    }  
     
     public boolean cpuBusyBoolean()
     { 
