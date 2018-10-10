@@ -7,6 +7,7 @@ package pkg6334project1;
 
 import java.io.*;
 import java.util.*;
+import javafx.util.Pair;
 
 /**
  *
@@ -23,8 +24,9 @@ public class OS extends Thread {
     public static ArrayList<Double> Arrival_Times = new ArrayList<>();
     public static ArrayList<Double> Waiting_Times = new ArrayList<>();
     public static ArrayList<Double> End_Times = new ArrayList<>();
-    //public static CPU cpu = new CPU();
-    //public IODevice io = new IODevice(Wait_Queue);
+    public static CPU cpu = new CPU(10);//set to 10 to enforce FCFS/PS
+    public IOdevice io = new IOdevice(Wait_Queue);
+    
     public boolean isCPUAvailable;
     // need to make processTable
 
@@ -40,7 +42,8 @@ public class OS extends Thread {
         New_Queue = Gen_New_Queue();
         int totalProcesses = New_Queue.size();
         
-        //if ready queue is emp, INITIALIZE
+        //if ready queue is emp,
+        //I N I T I A L I Z E
         if(Ready_Queue.isEmpty())
         {
             for(int i = 0; i < New_Queue.size(); ++i)
@@ -75,11 +78,58 @@ public class OS extends Thread {
             //if index even -> CPU thread -> running queue
             //if index odd -> IO thread ->IO queue
             
-            //if
+            //if even then push to running queue and take out of ready queue
             if(Ready_Queue.get(0).burstSeq.get(Ready_Queue.get(0).programCounter) % 2 == 0)
             {
+                Currently_Running.add(Ready_Queue.get(0));
+                Ready_Queue.remove(0);
+                Pair<Integer, String> executed;
+                executed = cpu.execute(Currently_Running.get(0));
                 
+                //if returned status after execution is wait -> waitQ,remove from CR
+                if(executed.getValue() == "wait")
+                {
+                    
+                    //TODO: add timers / threads
+                    Wait_Queue.add(Currently_Running.get(0));
+                    Currently_Running.remove(0);
+                }
+                //otherwise, it will return "ready", shove into ReadyQ, remove from CR
+                else
+                {
+                    Ready_Queue.add(Currently_Running.get(0));
+                    Currently_Running.remove(0);
+                }
             }
+            //add in IO device stuff
+            {
+                //add to wait queue, remove from running, execute 
+                Wait_Queue.add(Currently_Running.get(0));
+                Currently_Running.remove(0);
+                io.execute(Wait_Queue.get(0));
+                Wait_Queue.get(0).programCounter++;
+                Ready_Queue.add(Wait_Queue.get(0));
+                Wait_Queue.remove(0);
+            }
+            
+            //***start of beto code
+//            // if the waitQ is not empty, execute the amount of times in the io burst sequence at this programCounter
+//            if(Wait_Queue.isEmpty() == false){
+//                io.execute(Wait_Queue.get(0).burstSeq.get(Wait_Queue.get(0).programCounter);
+//                //increment globalTime however many times the io executes
+//                for(int i = 0; i < Wait_Queue.get(0).programCounter; i++){
+//                globalTime++;
+//                }
+//                //Move the programCounter
+//                Wait_Queue.get(0).programCounter++;
+//
+//                //put back process back into ReadyQ, and remove process from waitQ
+//                Ready_Queue.add(Wait_Queue.get(0));
+//                Wait_Queue.remove(0);
+//            }
+            //***end of beto code
+            
+            globalTime++;
         }
         
         

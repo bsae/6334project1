@@ -110,9 +110,9 @@ public class PCB {
     	}
     }
     
-    public List<Integer> rng(int n)
+    public ArrayList<Integer> rng(int n)
     {
-        List<Integer> result = new ArrayList<>();
+        ArrayList<Integer> result = new ArrayList<>();
         double rand = 0;
         for (int i : result)
         {

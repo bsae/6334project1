@@ -13,20 +13,28 @@ import java.util.*;
  */
 public class IOdevice{
     
-    public void IODevice(ArrayList<PCB> Wait_Queue){
+    //default constructor
+    public IOdevice()
+    {
+        
+    }
+    
+    public IOdevice(ArrayList Wait_Queue)
+    {
         
     }
     public boolean BusyOrNot;
 //Always pick one process from Wait_Queue to exeute
-    public void execute(int IO_burst){
+    public void execute(PCB P){
      BusyOrNot=true;
+     int programCounter = P.programCounter;
      PCB functionDude = new PCB();
-     for (int i = 0; i < IO_burst; ++i)
+     for (int i = 0; i < programCounter; ++i)
      {
-        
         functionDude.BubbleSort();
      }
      BusyOrNot = false;
+     
      System.out.println("Ready");
      //Call Bubble Sort() for IO_burst times and then return “ready”; 
     }

@@ -21,6 +21,12 @@ public class CPU{
         timeslice= settimeslice;
         cpuIsBusy=false;
     }
+    
+    public CPU()
+    {
+        cpuIsBusy = false;
+    }
+    
     public Pair<Integer, String> execute(PCB P){
         cpuIsBusy=true;
         
