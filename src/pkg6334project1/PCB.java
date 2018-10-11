@@ -95,26 +95,34 @@ public class PCB {
         endTime = System.nanoTime(); //b.w.h
     }
     
-    public void BubbleSort(){
-        List<Integer> listToSort = rng(100000);
-    	
-    	for (int i = 0; i < listToSort.size()-1; ++i)
-    	{
-    		for (int j = 0; j < listToSort.size()-1; ++j)
-    		{
-    			if (listToSort.indexOf(j) > listToSort.indexOf(j+1))
-    			{
-    				Collections.swap(listToSort, j, j+1);
-    			}
-    		}
-    	}
+   //move back to PCB
+    public static void BubbleSort() {
+        ArrayList<Integer> listToSort = rng(800);
+        
+        for(int i = listToSort.size()-1; i>=0;i--)
+        {
+            for(int j = 0; j < i; j++)
+            {
+                if(listToSort.get(j) > listToSort.get(j+1))
+                {
+                    int temp = listToSort.get(j);
+                    listToSort.set(j, listToSort.get(j+1));
+                    listToSort.set(j+1,temp);
+                }
+            }
+        }
+        for(int k = 0; k < listToSort.size(); ++k)
+        {
+            System.out.println(listToSort.get(k));
+        }
+            
     }
     
-    public ArrayList<Integer> rng(int n)
+    public static ArrayList<Integer> rng(int n)
     {
-        ArrayList<Integer> result = new ArrayList<>();
+        ArrayList<Integer> result = new ArrayList<>(n);
         double rand = 0;
-        for (int i : result)
+        for (int i = 0; i < n; ++i)
         {
             rand = (Math.random() * 100000)+1;
             result.add((int) rand);
@@ -123,4 +131,5 @@ public class PCB {
 
         return result;
     }
+
 }
