@@ -11,7 +11,7 @@ import javafx.util.Pair;
  * @author Humberto Saenz
  */
 
-public class CPU{
+public class CPU extends Thread {
     public boolean cpuIsBusy;
     public int PC; //Your CPU only has one register PC
     public int timeslice;
@@ -27,6 +27,7 @@ public class CPU{
         cpuIsBusy = false;
     }
     
+    //public Pair<Integer, String> execute(PCB P){
     public Pair<Integer, String> execute(PCB P){
         cpuIsBusy=true;
         
@@ -52,8 +53,8 @@ public class CPU{
        //best case
        //loop for num of cpu bursts
        //maybe break out if timeSliceRemaining = 0
-        for(int i = 0; i < P.burstSeq.get(programCounter); ++i)
-        {
+        //for(int i = 0; i < P.burstSeq.get(programCounter); ++i)
+        //{
             P.BubbleSort();
             
             //since Integer obj are immutable, copy value of whats at index
@@ -73,7 +74,7 @@ public class CPU{
                 return output;
             }
             
-        }
+        //}
     output = new Pair(programCounter+1, "wait");
     cpuIsBusy = false;
     return output;
@@ -81,7 +82,21 @@ public class CPU{
     
     public boolean cpuBusyBoolean()
     { 
-        return false;
+        return cpuIsBusy;
+    }
+    
+        public void run()
+    {
+        try{
+            for (int i = 0; i < 10; i++){
+                
+                System.out.println("CPU Thread Running: " + i);
+                Thread.sleep(50);
+                i += 1;
+            }
+        } catch (InterruptedException e) {
+        //handle 
+        }
     }
     
 }

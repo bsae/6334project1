@@ -31,6 +31,12 @@ public class OS extends Thread {
     // need to make processTable
 
     public static ArrayList<PCB> initialPCBs = new ArrayList<PCB>();
+    
+    
+    public OS(){
+        cpu.start();
+        io.start();
+    }
 
     //Read the txt input file, for each line, create a process and record its arrival
 //time
@@ -50,7 +56,7 @@ public class OS extends Thread {
             {
                 //loop through entire queue, until first thing is ready to arrive
                 //shove into queue
-                if (New_Queue.get(0).arrivalOrder == initialTime)
+                if (New_Queue.get(0).arrivalOrder == globalTime)
                 {
                     Ready_Queue.add(New_Queue.get(0));
                     New_Queue.remove(New_Queue.get(0));
@@ -59,7 +65,7 @@ public class OS extends Thread {
                 
              //do one instance of work, increment time
             New_Queue.get(i).BubbleSort();
-            initialTime++;                
+            globalTime++;                
             }
         }
         
@@ -68,7 +74,7 @@ public class OS extends Thread {
         {   
             //first things first, if first thing in newQ is ready
             //shove into readyQ
-            if(New_Queue.get(0).arrivalOrder == globalTime)
+            while(New_Queue.get(0).arrivalOrder == globalTime)
             {
                 //add to readyQ, remove from NewQ
                 Ready_Queue.add(New_Queue.get(0));
@@ -78,38 +84,80 @@ public class OS extends Thread {
             //if index even -> CPU thread -> running queue
             //if index odd -> IO thread ->IO queue
             
-            //if even then push to running queue and take out of ready queue
-            if(Ready_Queue.get(0).burstSeq.get(Ready_Queue.get(0).programCounter) % 2 == 0)
+            //if butstSeq index is even then push to running queue and take out of ready queue
+            if(Ready_Queue.get(0).programCounter % 2 == 0)
             {
                 Currently_Running.add(Ready_Queue.get(0));
                 Ready_Queue.remove(0);
                 Pair<Integer, String> executed;
                 executed = cpu.execute(Currently_Running.get(0));
+                //execute one run of bubblesort, increment global time
+                globalTime++;
+                
+                //loop through burstSeq iterations and add to readyQueue if time applies
+                for (int i = 0; i < Currently_Running.get(0).burstSeq.get(Currently_Running.get(0).programCounter); ++i)
+                {  
+                   //if first thing in newQ is ready to go, add to ready queue
+                   while(New_Queue.get(0).arrivalOrder == globalTime)
+                   {
+                        //add to readyQ, remove from NewQ
+                        Ready_Queue.add(New_Queue.get(0));
+                        New_Queue.remove(0); 
+                   }
+                   
+                   //run bubble sort for as many processes as needed, increment time
+                   executed = cpu.execute(Currently_Running.get(0));
+                   globalTime++;                   
+                }
+                
                 
                 //if returned status after execution is wait -> waitQ,remove from CR
                 if(executed.getValue() == "wait")
                 {
-                    
-                    //TODO: add timers / threads
-                    Wait_Queue.add(Currently_Running.get(0));
-                    Currently_Running.remove(0);
+                    //if burstSequence at end, then put in terminated queue
+                    //checking current program counter and if same size as burst seq list
+                    if(Currently_Running.get(0).programCounter == Currently_Running.get(0).burstSeq.size())
+                    {
+                        //shove currently running thing into terminated queue, remove from currently runningQ
+                        Terminated_Queue.add(Currently_Running.get(0));
+                        Currently_Running.remove(0);
+                    }
+                    else
+                    {
+                        //TODO: add timers / threads
+                        Wait_Queue.add(Currently_Running.get(0));
+                        Currently_Running.remove(0);
+                    }
+
                 }
-                //otherwise, it will return "ready", shove into ReadyQ, remove from CR
+                //otherwise, it will return "ready", terminate if over, else, shove into ReadyQ, remove from CR
                 else
                 {
-                    Ready_Queue.add(Currently_Running.get(0));
-                    Currently_Running.remove(0);
+                    if(Currently_Running.get(0).programCounter == Currently_Running.get(0).burstSeq.size())
+                    {
+                        //shove currently running thing into terminated queue, remove from currently runningQ
+                        Terminated_Queue.add(Currently_Running.get(0));
+                        Currently_Running.remove(0);
+                    }
+                    else
+                    {
+                        //TODO: add timers / threads
+                        Ready_Queue.add(Currently_Running.get(0));
+                        Currently_Running.remove(0);
+                    }
                 }
             }
             //add in IO device stuff
+            else
             {
                 //add to wait queue, remove from running, execute 
                 Wait_Queue.add(Currently_Running.get(0));
                 Currently_Running.remove(0);
-                io.execute(Wait_Queue.get(0));
+                io.execute(Wait_Queue.get(0));//returns ready, add to Q
                 Wait_Queue.get(0).programCounter++;
                 Ready_Queue.add(Wait_Queue.get(0));
                 Wait_Queue.remove(0);
+                
             }
             
             //***start of beto code
@@ -139,7 +187,8 @@ public class OS extends Thread {
     public ArrayList<PCB> Gen_New_Queue()
     {
         ArrayList<PCB> result = new ArrayList<PCB>();
-        File input = new File("C:\\Users\\Chen\\Documents\\Git\\6334project1\\src\\pkg6334project1\\input.txt");
+        File input = new File("C:\\Users\\frank\\Desktop\\6334project1\\src\\input.txt");
+        //in format of ID, ARRIVAL, PRIORITY, BURST SEQ
         try(Scanner sc = new Scanner(input))
         {
             //store current process in temp var, store in Queue
@@ -181,8 +230,30 @@ public class OS extends Thread {
         return result;
     }
     
+    void RR()
+    {
+        //TODO
+    }
     
-    }//end of OS class
+    void PS()
+    {
+        //TODO
+    }
+    
+    public void run()
+    {
+        try{
+            for (int i = 0; i < 10; i++){
+                
+                System.out.println("OS Thread Running: " + i);
+                Thread.sleep(50);
+                i += 1;
+            }
+        } catch (InterruptedException e) {
+        //handle 
+        }
+    }
+}//end of OS class
 
     
 
