@@ -56,19 +56,30 @@ public class Main {
 
 
     }
-    
-    //FIX BUBBLESORT!!
+    //move back to PCB
     public static void BubbleSort() {
         ArrayList<Integer> listToSort = rng(800);
-
-        for (int i = 0; i < listToSort.size() - 1; ++i) {
-            for (int j = 0; j < listToSort.size() - 1; ++j) {
-                if (listToSort.indexOf(j) > listToSort.indexOf(j + 1)) {
-                    //Collections.swap(listToSort, listToSort.get(j), listToSort.get(j + 1));
+        
+        for(int i = listToSort.size()-1; i>=0;i--)
+        {
+            for(int j = 0; j < i; j++)
+            {
+                if(listToSort.get(j) > listToSort.get(j+1))
+                {
+                    int temp = listToSort.get(j);
                     listToSort.set(j, listToSort.get(j+1));
+                    listToSort.set(j+1,temp);
                 }
             }
         }
+//        for (int i = 0; i < listToSort.size() - 1; ++i) {
+//            for (int j = 0; j < listToSort.size() - 1; ++j) {
+//                if (listToSort.indexOf(j) > listToSort.indexOf(j + 1)) {
+//                    //Collections.swap(listToSort, listToSort.get(j), listToSort.get(j + 1));
+//                    listToSort.set(j, listToSort.get(j+1));
+//                }
+//            }
+//        }
         for(int k = 0; k < listToSort.size(); ++k)
         {
             System.out.println(listToSort.get(k));
