@@ -33,8 +33,8 @@ public class OS extends Thread {
     public static ArrayList<PCB> initialPCBs = new ArrayList<PCB>();
 
     public OS() {
-        cpu.start();
-        io.start();
+        //cpu.start();
+        //io.start();
     }
 
     //Read the txt input file, for each line, create a process and record its arrival
@@ -52,10 +52,12 @@ public class OS extends Thread {
             for (int i = 0; i < New_Queue.size(); ++i) {
                 //loop through entire queue, until first thing is ready to arrive
                 //shove into queue
-                if (New_Queue.get(0).arrivalOrder == globalTime) {
-                    Ready_Queue.add(New_Queue.get(0));
-                    New_Queue.remove(New_Queue.get(0));
-                    break;
+                if (!New_Queue.isEmpty()) {
+                    while (New_Queue.get(0).arrivalOrder == globalTime) {
+                        //add to readyQ, remove from NewQ
+                        Ready_Queue.add(New_Queue.get(0));
+                        New_Queue.remove(0);
+                    }
                 }
 
                 //do one instance of work, increment time
@@ -68,15 +70,19 @@ public class OS extends Thread {
         while (Terminated_Queue.size() != totalProcesses) {
             //first things first, if first thing in newQ is ready
             //shove into readyQ
-            while (New_Queue.get(0).arrivalOrder == globalTime) {
-                //add to readyQ, remove from NewQ
-                Ready_Queue.add(New_Queue.get(0));
-                New_Queue.remove(0);
+            if (!New_Queue.isEmpty()) {
+                while (New_Queue.get(0).arrivalOrder == globalTime) {
+                    //add to readyQ, remove from NewQ
+                    Ready_Queue.add(New_Queue.get(0));
+                    New_Queue.remove(0);
+                }
             }
 
             //if index even -> CPU thread -> running queue
             //if index odd -> IO thread ->IO queue
             //if butstSeq index is even then push to running queue and take out of ready queue
+            if (!Ready_Queue.isEmpty())
+            {
             if (Ready_Queue.get(0).programCounter % 2 == 0) {
                 Currently_Running.add(Ready_Queue.get(0));
                 Ready_Queue.remove(0);
@@ -84,30 +90,40 @@ public class OS extends Thread {
                 executed = cpu.execute(Currently_Running.get(0));
                 //execute one run of bubblesort, increment global time
                 globalTime++;
-                
+
                 //increment time -> check if things are ready from new
-                while (New_Queue.get(0).arrivalOrder == globalTime) {
-                    //add to readyQ, remove from NewQ
-                    Ready_Queue.add(New_Queue.get(0));
-                    New_Queue.remove(0);
+                if (!New_Queue.isEmpty()) {
+                    System.out.println("TESTHERE Size->" + New_Queue.size());
+                    for (PCB a : New_Queue)
+                    {
+                        System.out.println(a.ID);
+                        System.out.println(New_Queue.indexOf(a));
+                    }
+                    System.out.println(New_Queue.get(0).arrivalOrder);
+                    try{
+                        while ((New_Queue.get(0).arrivalOrder == globalTime) && (!New_Queue.isEmpty())) {
+                            //add to readyQ, remove from NewQ
+                            Ready_Queue.add(New_Queue.get(0));
+                            New_Queue.remove(0);
+                        }
+                    } catch (IndexOutOfBoundsException e){
+                        continue;
+                    }
                 }
 
                 //loop through burstSeq iterations and add to readyQueue if time applies
                 for (int i = 0; i < Currently_Running.get(0).burstSeq.get(Currently_Running.get(0).programCounter); ++i) {
                     //if first thing in newQ is ready to go, add to ready queue
-                    while (New_Queue.get(0).arrivalOrder == globalTime) {
-                        //add to readyQ, remove from NewQ
-                        Ready_Queue.add(New_Queue.get(0));
-                        New_Queue.remove(0);
-                    }
 
                     //run bubble sort for as many processes as needed, increment time
                     executed = cpu.execute(Currently_Running.get(0));
                     globalTime++;
-                    while (New_Queue.get(0).arrivalOrder == globalTime) {
-                        //add to readyQ, remove from NewQ
-                        Ready_Queue.add(New_Queue.get(0));
-                        New_Queue.remove(0);
+                    if (!New_Queue.isEmpty()) {
+                        while (New_Queue.get(0).arrivalOrder == globalTime) {
+                            //add to readyQ, remove from NewQ
+                            Ready_Queue.add(New_Queue.get(0));
+                            New_Queue.remove(0);
+                        }
                     }
                 }
 
@@ -148,11 +164,13 @@ public class OS extends Thread {
                         i < Wait_Queue.get(0).burstSeq.get(Wait_Queue.get(0).programCounter);
                         ++i) {
 
-                    while (New_Queue.get(0).arrivalOrder == globalTime) {
+                    if (!New_Queue.isEmpty()) {
+                        while (New_Queue.get(0).arrivalOrder == globalTime) {
                             //add to readyQ, remove from NewQ
                             Ready_Queue.add(New_Queue.get(0));
                             New_Queue.remove(0);
                         }
+                    }
                     io.execute(Wait_Queue.get(0));//returns ready, add to Q
                     globalTime++;
                 }
@@ -161,6 +179,7 @@ public class OS extends Thread {
                 Ready_Queue.add(Wait_Queue.get(0));
                 Wait_Queue.remove(0);
 
+            }
             }
 
             //***start of beto code
@@ -179,16 +198,14 @@ public class OS extends Thread {
 //                Wait_Queue.remove(0);
 //            }
             //***end of beto code
-            globalTime++;
         }
 
         isCPUAvailable = true;
-
     }
 
     public ArrayList<PCB> Gen_New_Queue() {
         ArrayList<PCB> result = new ArrayList<PCB>();
-        File input = new File("C:\\Users\\frank\\Desktop\\6334project1\\src\\input.txt");
+        File input = new File("C:\\Users\\frank\\Desktop\\6334project1\\src\\input_file.txt");
         //in format of ID, ARRIVAL, PRIORITY, BURST SEQ
         try (Scanner sc = new Scanner(input)) {
             //store current process in temp var, store in Queue
@@ -239,10 +256,12 @@ public class OS extends Thread {
             for (int i = 0; i < New_Queue.size(); ++i) {
                 //loop through entire queue, until first thing is ready to arrive
                 //shove into queue
-                if (New_Queue.get(0).arrivalOrder == globalTime) {
-                    Ready_Queue.add(New_Queue.get(0));
-                    New_Queue.remove(New_Queue.get(0));
-                    break;
+                if (!New_Queue.isEmpty()) {
+                    while (New_Queue.get(0).arrivalOrder == globalTime) {
+                        //add to readyQ, remove from NewQ
+                        Ready_Queue.add(New_Queue.get(0));
+                        New_Queue.remove(0);
+                    }
                 }
 
                 //do one instance of work, increment time
@@ -254,6 +273,14 @@ public class OS extends Thread {
         //loop through until term queue is full
         while (Terminated_Queue.size() != totalProcesses) {
 
+            if (!New_Queue.isEmpty()) {
+                while (New_Queue.get(0).arrivalOrder == globalTime) {
+                    //add to readyQ, remove from NewQ
+                    Ready_Queue.add(New_Queue.get(0));
+                    New_Queue.remove(0);
+                }
+            }
+
             //if burstSeq index is even then push to running queue and take out of ready queue
             if (Ready_Queue.get(0).programCounter % 2 == 0) {
                 Currently_Running.add(Ready_Queue.get(0));
@@ -263,14 +290,17 @@ public class OS extends Thread {
                 for (int i = 0; i < c.timeslice; ++i) {
                     executed = cpu.execute((Currently_Running.get(0)));
                     globalTime++;
-                    
+
                     //check if there exists something ready to be put into ReadyQ from New
-                    while (New_Queue.get(0).arrivalOrder == globalTime) {
-                        //add to readyQ, remove from NewQ
-                        Ready_Queue.add(New_Queue.get(0));
-                        New_Queue.remove(0);
+                    if (!New_Queue.isEmpty()) {
+                        while (New_Queue.get(0).arrivalOrder == globalTime) {
+                            //add to readyQ, remove from NewQ
+                            Ready_Queue.add(New_Queue.get(0));
+                            New_Queue.remove(0);
+                        }
                     }
 
+                    //terminate check
                     if (Currently_Running.get(0).programCounter == Currently_Running.get(0).burstSeq.size()) {
                         //shove currently running thing into terminated queue, remove from currently runningQ
                         Terminated_Queue.add(Currently_Running.get(0));
@@ -282,8 +312,7 @@ public class OS extends Thread {
                         Currently_Running.remove(0);
                     }
                 }
-            }
-            //burstseq is odd -> IO burst
+            } //burstseq is odd -> IO burst
             else {
                 //add to wait queue, remove from running, execute 
                 Wait_Queue.add(Currently_Running.get(0));
@@ -294,11 +323,13 @@ public class OS extends Thread {
                         i < Wait_Queue.get(0).burstSeq.get(Wait_Queue.get(0).programCounter);
                         ++i) {
 
-                    while (New_Queue.get(0).arrivalOrder == globalTime) {
+                    if (!New_Queue.isEmpty()) {
+                        while (New_Queue.get(0).arrivalOrder == globalTime) {
                             //add to readyQ, remove from NewQ
                             Ready_Queue.add(New_Queue.get(0));
                             New_Queue.remove(0);
                         }
+                    }
                     io.execute(Wait_Queue.get(0));//returns ready, add to Q
                     globalTime++;
                 }

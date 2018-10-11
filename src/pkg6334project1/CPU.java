@@ -27,7 +27,6 @@ public class CPU extends Thread {
         cpuIsBusy = false;
     }
     
-    //public Pair<Integer, String> execute(PCB P){
     public Pair<Integer, String> execute(PCB P){
         cpuIsBusy=true;
         
@@ -61,7 +60,7 @@ public class CPU extends Thread {
             //decrement, reset at index
             int tempVal = P.burstSeq.get(programCounter);
             tempVal--;
-            P.burstSeq.set(programCounter,tempVal);
+            P.burstSeq.set(P.burstSeq.get(programCounter),tempVal);
            
             timeSliceRemaining--;
             

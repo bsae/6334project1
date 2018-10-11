@@ -95,7 +95,6 @@ public class PCB {
         endTime = System.nanoTime(); //b.w.h
     }
     
-   //move back to PCB
     public static void BubbleSort() {
         ArrayList<Integer> listToSort = rng(800);
         
@@ -111,10 +110,10 @@ public class PCB {
                 }
             }
         }
-        for(int k = 0; k < listToSort.size(); ++k)
-        {
-            System.out.println(listToSort.get(k));
-        }
+//        for(int k = 0; k < listToSort.size(); ++k)
+//        {
+//            System.out.println(listToSort.get(k));
+//        }
             
     }
     

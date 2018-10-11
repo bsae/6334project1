@@ -39,6 +39,11 @@ public class IOdevice extends Thread {
      //Call Bubble Sort() for IO_burst times and then return “ready”; 
     }
     
+    boolean BusyOrNot()
+    {
+        return BusyOrNot;
+    }
+    
     public void run()
     {
         try{
