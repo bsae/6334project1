@@ -27,14 +27,14 @@ public class IOdevice extends Thread {
 //Always pick one process from Wait_Queue to exeute
     public void execute(PCB P){
      BusyOrNot=true;
-     int programCounter = P.programCounter;
      PCB functionDude = new PCB();
-     for (int i = 0; i < programCounter; ++i)
-     {
+//     for (int i = 0; i < programCounter; ++i)
+//     {
         functionDude.BubbleSort();
-     }
+     //}
      BusyOrNot = false;
      
+     //P.programCounter++;
      System.out.println("Ready");
      //Call Bubble Sort() for IO_burst times and then return “ready”; 
     }
@@ -45,7 +45,7 @@ public class IOdevice extends Thread {
             for (int i = 0; i < 10; i++){
                 
                 System.out.println("IO Device Thread Running: " + i);
-                Thread.sleep(50);
+                Thread.sleep(10);
                 i += 1;
             }
         } catch (InterruptedException e) {

@@ -91,7 +91,7 @@ public class CPU extends Thread {
             for (int i = 0; i < 10; i++){
                 
                 System.out.println("CPU Thread Running: " + i);
-                Thread.sleep(50);
+                Thread.sleep(10);
                 i += 1;
             }
         } catch (InterruptedException e) {
