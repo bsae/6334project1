@@ -11,7 +11,7 @@ import java.util.*;
  *
  * @author Humberto Saenz
  */
-public class IOdevice{
+public class IOdevice extends Thread {
     
     //default constructor
     public IOdevice()
@@ -37,5 +37,19 @@ public class IOdevice{
      
      System.out.println("Ready");
      //Call Bubble Sort() for IO_burst times and then return “ready”; 
+    }
+    
+    public void run()
+    {
+        try{
+            for (int i = 0; i < 10; i++){
+                
+                System.out.println("IO Device Thread Running: " + i);
+                Thread.sleep(50);
+                i += 1;
+            }
+        } catch (InterruptedException e) {
+        //handle 
+        }
     }
 }
